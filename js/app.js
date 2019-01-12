@@ -10,11 +10,12 @@ let noise = true;
 let power = false;
 let win;
 
+
 const turnCounter = document.querySelector("#turn");
-const leftBlock = document.querySelector("#Left");
-const rightBlock = document.querySelector("#right");
-const topBlock = document.querySelector("#top");
-const bottomBlock = document.querySelector("#bottom");
+const topBlock = document.querySelector("#topBlock");
+const leftBlock = document.querySelector("#leftBlock");
+const bottomBlock = document.querySelector("#bottomBlock");
+const rightBlock = document.querySelector("#rightBlock");
 const strictButton = document.querySelector("#strict");
 const onButton = document.querySelector("#on");
 const startButton = document.querySelector("#start");
@@ -91,25 +92,25 @@ function gameTurn() {
 //Bind audio to each section and change color; flash color
 function one() {
   if (noise) {
-    let audio = doucument.getElementById("clip1");
-    audio.play();
-  }
-  noise = true;
-  leftBlock.style.backgroundColor = "lightgreen";
-};
-
-function two() {
-  if (noise) {
-    let audio = doucument.getElementById("clip2");
+    let audio = document.getElementById("clip1");
     audio.play();
   }
   noise = true;
   topBlock.style.backgroundColor = "tomato";
 };
 
+function two() {
+  if (noise) {
+    let audio = document.getElementById("clip2");
+    audio.play();
+  }
+  noise = true;
+  leftBlock.style.backgroundColor = "lightgreen";
+};
+
 function three() {
   if (noise) {
-    let audio = doucument.getElementById("clip3");
+    let audio = document.getElementById("clip3");
     audio.play();
   }
   noise = true;
@@ -118,7 +119,7 @@ function three() {
 
 function four() {
   if (noise) {
-    let audio = doucument.getElementById("clip4");
+    let audio = document.getElementById("clip4");
     audio.play();
   }
   noise = true;
@@ -127,9 +128,108 @@ function four() {
 
 
 //Reset color to default CSS value
-function clearColor() {
-  leftBlock.style.backgroundColor = "green";
+let clearColor = () => {
   topBlock.style.backgroundColor = "red";
+  leftBlock.style.backgroundColor = "green";
   bottomBlock.style.backgroundColor = "orange";
   rightBlock.style.backgroundColor = "blue";
+};
+
+let flashColor = () => {
+  topBlock.style.backgroundColor = "tomato";
+  leftBlock.style.backgroundColor = "lightgreen";
+  bottomBlock.style.backgroundColor = "yellow";
+  rightBlock.style.backgroundColor = "lightskyblue";
+};
+
+topBlock.addEventListener('click', (event) => {
+  if (on) {
+    playerOrder.push(1);
+    check();
+    one();
+    if (!win) {
+      setTimeout(() => {
+        clearColor();
+      },300);
+    }
+  }
+});
+
+leftBlock.addEventListener('click', (event) => {
+  if (on) {
+    playerOrder.push(2);
+    check();
+    two();
+    if (!win) {
+      setTimeout(() => {
+        clearColor();
+      },300);
+    }
+  }
+});
+
+bottomBlock.addEventListener('click', (event) => {
+  if (on) {
+    playerOrder.push(3);
+    check();
+    three();
+    if (!win) {
+      setTimeout(() => {
+        clearColor();
+      },300);
+    }
+  }
+});
+
+rightBlock.addEventListener('click', (event) => {
+  if (on) {
+    playerOrder.push(4);
+    check();
+    four();
+    if (!win) {
+      setTimeout(() => {
+        clearColor();
+      },300);
+    }
+  }
+});
+
+function check() {
+  if (playerOrder[playerOrder.length - 1] !== order[playerOrder.length - 1])
+    good = false;
+  if (playerOrder.length == 20 && good) {
+    winGame();
+  }
+  if (good == false) {
+    flashColor();
+    turnCounter.innerHTM = "NO!"
+    setTimeout(() => {
+      turnCounter.innerHTML = turn;
+      clearColor();
+      if (strict) {
+        play();
+      } else {
+        compTurn = true;
+        flash = 0;
+        playerOrder = [];
+        good = true;
+        intervalId = setInterval(gameTurn, 800);
+      }
+    },800);
+    noise = false;
+  }
+    if (turn == playerOrder.length && good && !win)
+    turn++;
+    playerOrder = [];
+    compTurn = true;
+    flash = 0;
+    turnCounter.innerHTML = turn;
+    intervalId = setInterval(gameTurn, 800);
+};
+
+function winGame() {
+  flashColor();
+  turnCounter.innerHTML = "WIN!";
+  on = false;
+  win = true;
 };
