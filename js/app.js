@@ -7,7 +7,7 @@ let compTurn;
 let intervalId;
 let strict = false;
 let noise = true;
-let power = false;
+let on = false;
 let win;
 
 
@@ -49,6 +49,7 @@ startButton.addEventListener('click', (event) => {
   }
 });
 
+//set the new game default values,win condition loop 20 times between the 4 colored panels
 function play() {
   win = false;
   order = [];
@@ -66,9 +67,9 @@ function play() {
   intervalId = setInterval(gameTurn, 800);
  };
 
-
+//define when its players turn and when its compTurn - lights flash -
 function gameTurn() {
-  on = false;
+  on = false; // player can not push panels while lights flash
 
   if (flash == turn) {
     clearInterval(intervalId);
@@ -129,12 +130,13 @@ function four() {
 
 //Reset color to default CSS value
 let clearColor = () => {
-  topBlock.style.backgroundColor = "red";
+  topBlock.style.backgroundColor = "darkred";
   leftBlock.style.backgroundColor = "green";
   bottomBlock.style.backgroundColor = "orange";
   rightBlock.style.backgroundColor = "blue";
 };
 
+//add the flash effect to the 4 panels
 let flashColor = () => {
   topBlock.style.backgroundColor = "tomato";
   leftBlock.style.backgroundColor = "lightgreen";
@@ -142,6 +144,7 @@ let flashColor = () => {
   rightBlock.style.backgroundColor = "lightskyblue";
 };
 
+//Enable the player to interact and validate flashed color
 topBlock.addEventListener('click', (event) => {
   if (on) {
     playerOrder.push(1);
@@ -194,16 +197,17 @@ rightBlock.addEventListener('click', (event) => {
   }
 });
 
+//set condition if player won game, player got it wrong, player got right bu not win the game yet
 function check() {
   if (playerOrder[playerOrder.length - 1] !== order[playerOrder.length - 1])
-    good = false;
+    good = false; //
   if (playerOrder.length == 20 && good) {
     winGame();
   }
   if (good == false) {
-    flashColor();
-    turnCounter.innerHTM = "NO!"
-    setTimeout(() => {
+      flashColor();
+      turnCounter.innerHTML = "NO!";
+      setTimeout(() => {
       turnCounter.innerHTML = turn;
       clearColor();
       if (strict) {
@@ -218,15 +222,17 @@ function check() {
     },800);
     noise = false;
   }
-    if (turn == playerOrder.length && good && !win)
-    turn++;
-    playerOrder = [];
-    compTurn = true;
-    flash = 0;
-    turnCounter.innerHTML = turn;
-    intervalId = setInterval(gameTurn, 800);
+    if (turn == playerOrder.length && good && !win) {
+      turn++;
+      playerOrder = [];
+      compTurn = true;
+      flash = 0;
+      turnCounter.innerHTML = turn;
+      intervalId = setInterval(gameTurn, 800);
+   }
 };
 
+//Congratulaions, you have won the game
 function winGame() {
   flashColor();
   turnCounter.innerHTML = "WIN!";
